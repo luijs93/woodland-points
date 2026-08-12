@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Behavior Points</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sage:      #7a9e7e;
+    --sage-mid:  #91b594;
+    --sage-light:#d6ead7;
+    --sage-pale: #edf5ee;
+    --blush:     #e8a4a0;
+    --blush-light:#faeae9;
+    --honey:     #d4a96a;
+    --honey-light:#faf0de;
+    --sky:       #89b8d4;
+    --sky-light: #deeef7;
+    --lavender:  #b0a4d4;
+    --lav-light: #edeaf8;
+    --rose:      #d48a7a;
+    --rose-light:#fae6e2;
+    --parchment: #faf7f2;
+    --paper:     #f4f0e8;
+    --card:      #fffdf9;
+    --ink:       #3a3228;
+    --ink-mid:   #6b5f50;
+    --ink-light: #a89880;
+    --border:    rgba(122,158,126,0.25);
+    --border-md: rgba(122,158,126,0.40);
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --radius-xl: 30px;
+    --earn:      #7aaa7e;
+    --earn-light:#dff0e0;
+    --earn-dark: #3d6b40;
+    --lose:      #c97a70;
+    --lose-light:#faeae8;
+    --lose-dark: #8a3d36;
+    --spend:     #c09a5a;
+    --spend-light:#faf0de;
+    --spend-dark: #7a5c28;
+    --brand:     #7a9e7e;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 10% 0%, #d6ead7 0%, transparent 45%),
+      radial-gradient(ellipse at 90% 0%, #deeef7 0%, transparent 35%),
+      radial-gradient(ellipse at 50% 100%, #faeae9 0%, transparent 45%);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  #app { max-width: 820px; margin: 0 auto; padding: 1.5rem 1rem 5rem; }
+
+  .site-header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+    padding: 1.4rem 1rem 1.1rem;
+    background: linear-gradient(135deg, #a8c8aa 0%, #89b8d4 50%, #c4b8e0 100%);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 20px rgba(122,158,126,0.18);
+  }
+  .site-header::before {
+    content: '🌿🦊🍄🦔🌸🐰🍂🦉🌿';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    font-size: 20px;
+    letter-spacing: 6px;
+    opacity: 0.28;
+  }
+  .site-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    border-radius: inherit;
+  }
+  .site-header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: 0.5px;
+    margin: 0;
+    text-shadow: 0 1px 8px rgba(80,100,80,0.28);
+    position: relative; z-index: 1;
+  }
+  .site-header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    margin-top: 3px;
+    font-weight: 600;
+    position: relative; z-index: 1;
+  }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 3px; margin-bottom: 1.5rem; background: linear-gradient(135deg, #a8c8aa, #89b8d4); padding: 5px; border-radius: var(--radius-lg); box-shadow: 0 2px 10px rgba(122,158,126,0.18); }
+  .tab { flex: 1; padding: 8px 3px; border: none; background: transparent; cursor: pointer; border-radius: var(--radius-md); font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); transition: all 0.15s; font-family: 'Nunito', sans-serif; letter-spacing: 0.2px; }
+  .tab.active { background: var(--card); color: var(--sage); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+  .tab:hover:not(.active) { background: rgba(255,255,255,0.18); color: #fff; }
+  .tab i { display: block; font-size: 17px; margin-bottom: 2px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Section headers */
+  .class-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .class-title { font-family: 'Fredoka One', cursive; font-size: 20px; color: var(--sage); letter-spacing: 0.3px; }
+
+  /* Buttons */
+  .btn { border: 2px solid var(--border-md); background: var(--card); color: var(--ink); padding: 7px 14px; border-radius: var(--radius-md); cursor: pointer; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; transition: all 0.12s; font-family: 'Nunito', sans-serif; }
+  .btn:hover { background: var(--paper); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .btn:active { transform: translateY(0); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn-earn { background: var(--earn-light); border-color: #a8d4aa; color: var(--earn-dark); }
+  .btn-earn:hover { background: #cce8cc; }
+  .btn-lose { background: var(--lose-light); border-color: #e8aaa4; color: var(--lose-dark); }
+  .btn-lose:hover { background: #f4d0cc; }
+  .btn-spend { background: var(--spend-light); border-color: #d4b880; color: var(--spend-dark); }
+  .btn-spend:hover { background: #f0e4c4; }
+  .btn-primary { background: var(--sage); border-color: var(--sage); color: #fff; }
+  .btn-primary:hover { background: var(--sage-mid); border-color: var(--sage-mid); }
+  .btn-danger { background: var(--lose-light); border-color: #e8aaa4; color: var(--lose-dark); }
+
+  /* Stat cards */
+  .class-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card { border-radius: var(--radius-md); padding: 0.85rem 1rem; text-align: center; border: 2px solid rgba(255,255,255,0.7); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .stat-card:nth-child(1) { background: linear-gradient(135deg, #b8d8ba, #cce8ce); }
+  .stat-card:nth-child(2) { background: linear-gradient(135deg, #a8c8e0, #bcdcf0); }
+  .stat-card:nth-child(3) { background: linear-gradient(135deg, #d4b8e0, #e4ccf0); }
+  .stat-label { font-size: 11px; color: rgba(58,50,40,0.65); margin-bottom: 2px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .stat-val { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--ink); }
+
+  /* Select / quick-actions bar */
+  .select-all-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem; font-size: 13px; color: var(--ink-mid); font-weight: 600; }
+  .selected-bar { background: var(--sage-pale); border: 2px solid var(--sage-light); border-radius: var(--radius-md); padding: 9px 14px; margin-bottom: 1rem; font-size: 13px; color: var(--sage); display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .quick-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; }
+  .section-label { font-size: 11px; font-weight: 800; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+
+  /* Student cards */
+  .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 12px; }
+  .student-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 0.75rem 0.85rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(122,158,126,0.08);
+  }
+  .student-card:hover { border-color: var(--sage-mid); transform: translateY(-3px); box-shadow: 0 6px 18px rgba(122,158,126,0.18); }
+  .student-card.selected { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.25); background: var(--sage-pale); }
+  .avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 9px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .student-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+  .student-points { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--sage); }
+  .points-label { font-size: 11px; color: var(--ink-light); font-weight: 600; }
+  .point-flash { position: absolute; top: 8px; right: 10px; font-size: 14px; font-weight: 800; opacity: 0; transition: opacity 0.15s; pointer-events: none; font-family: 'Fredoka One', cursive; }
+
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--ink-light); font-size: 14px; font-weight: 600; }
+  .empty-state i { font-size: 44px; display: block; margin-bottom: 0.5rem; color: var(--ink-light); opacity: 0.4; }
+
+  /* Behaviors */
+  .behaviors-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+  .behavior-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 10px 14px; transition: all 0.12s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .behavior-row:hover { box-shadow: 0 3px 10px rgba(122,158,126,0.12); transform: translateY(-1px); }
+  .behavior-emoji { font-size: 22px; width: 32px; text-align: center; }
+  .behavior-info { flex: 1; }
+  .behavior-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .behavior-pts { font-size: 12px; color: var(--ink-light); font-weight: 600; }
+
+  /* Rewards */
+  .reward-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
+  .reward-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; transition: all 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .reward-card:hover { border-color: #d4b880; transform: translateY(-2px); box-shadow: 0 5px 16px rgba(192,154,90,0.14); }
+  .reward-emoji { font-size: 34px; margin-bottom: 8px; }
+  .reward-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+  .reward-cost { font-size: 13px; color: var(--ink-light); margin-bottom: 10px; font-weight: 600; }
+  .reward-cost-num { font-family: 'Fredoka One', cursive; color: var(--honey); font-size: 16px; }
+
+  /* History */
+  .history-list { display: flex; flex-direction: column; gap: 6px; }
+  .history-item { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-md); font-size: 13px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .history-delta { font-family: 'Fredoka One', cursive; font-size: 15px; min-width: 38px; text-align: right; }
+  .history-delta.pos { color: var(--earn); }
+  .history-delta.neg { color: var(--lose); }
+  .history-time { color: var(--ink-light); font-size: 11px; margin-left: auto; white-space: nowrap; font-weight: 600; }
+
+  /* Groups */
+  .group-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .group-card-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 2px solid var(--border); background: linear-gradient(90deg, var(--sage-pale), var(--card)); }
+  .group-color-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.7); box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .group-name { font-family: 'Fredoka One', cursive; font-size: 16px; color: var(--sage); flex: 1; }
+  .group-member-count { font-size: 12px; color: var(--ink-light); font-weight: 600; }
+  .group-card-body { padding: 12px 16px; }
+  .group-members-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; min-height: 36px; }
+  .group-member-chip { display: flex; align-items: center; gap: 5px; background: var(--sage-pale); border: 2px solid var(--sage-light); border-radius: 99px; padding: 3px 10px 3px 6px; font-size: 13px; font-weight: 700; color: var(--sage); }
+  .group-member-chip span { font-size: 16px; }
+  .group-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* Modals */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(40,55,45,0.45); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
+  .modal { background: var(--card); border: 2px solid rgba(255,255,255,0.8); border-radius: var(--radius-xl); padding: 1.5rem; width: 340px; max-width: 95vw; box-shadow: 0 12px 40px rgba(60,80,60,0.18); }
+  .modal-title { font-family: 'Fredoka One', cursive; font-size: 19px; color: var(--sage); margin-bottom: 1rem; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1rem; }
+  .form-group { margin-bottom: 12px; }
+  .form-label { font-size: 12px; color: var(--ink-mid); margin-bottom: 5px; display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  input[type="text"], input[type="number"], select {
+    width: 100%; padding: 8px 11px;
+    border: 2px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600;
+    background: var(--parchment); color: var(--ink);
+    outline: none; font-family: 'Nunito', sans-serif;
+  }
+  input:focus, select:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.18); }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--sage); color: #fff; padding: 11px 24px; border-radius: 99px; font-size: 13px; font-weight: 700; z-index: 200; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 18px rgba(100,140,100,0.35); font-family: 'Nunito', sans-serif; }
+  .toast.show { opacity: 1; }
+
+  /* Behavior student rows */
+  .beh-student-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.1s; user-select: none; }
+  .beh-student-row:hover { background: var(--sage-pale); }
+  .beh-student-row input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; accent-color: var(--sage); }
+  .beh-student-row .bsr-name { font-size: 14px; font-weight: 700; flex: 1; }
+  .beh-student-row .bsr-pts { font-size: 12px; color: var(--ink-light); font-weight: 600; }
+
+  /* Emoji pickers */
+  .emoji-picker-grid { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+  .ep-btn { font-size: 22px; background: none; border: 2px solid transparent; border-radius: 10px; cursor: pointer; padding: 3px; transition: all 0.1s; }
+  .ep-btn:hover { background: var(--sage-pale); }
+  .ep-btn.selected { border-color: var(--sage); background: var(--sage-pale); }
+
+  /* Color swatches */
+  .color-swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s, border-color 0.1s; flex-shrink: 0; }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected { border-color: var(--ink); transform: scale(1.15); }
+
+  /* Login screen */
+  #login-screen { position: fixed; inset: 0; background: var(--paper); background-image: radial-gradient(ellipse at 10% 0%, #d6ead7 0%, transparent 45%), radial-gradient(ellipse at 90% 0%, #deeef7 0%, transparent 35%), radial-gradient(ellipse at 50% 100%, #faeae9 0%, transparent 45%); display: flex; align-items: center; justify-content: center; z-index: 999; }
+  #login-box { background: var(--card); border: 2px solid var(--border-md); border-radius: var(--radius-xl); padding: 2rem 2rem 1.75rem; width: 340px; max-width: 95vw; box-shadow: 0 12px 40px rgba(60,80,60,0.18); text-align: center; }
+  #login-box h2 { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--sage); margin-bottom: 4px; }
+  #login-box p { font-size: 13px; color: var(--ink-light); font-weight: 600; margin-bottom: 1.5rem; }
+  #login-box .form-group { text-align: left; }
+  #login-error { font-size: 13px; font-weight: 700; color: var(--lose-dark); background: var(--lose-light); border: 2px solid var(--lose); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 1rem; display: none; }
+  input[type="email"], input[type="password"] { width: 100%; padding: 8px 11px; border: 2px solid var(--border-md); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; background: var(--parchment); color: var(--ink); outline: none; font-family: 'Nunito', sans-serif; margin-bottom: 0; }
+  input[type="email"]:focus, input[type="password"]:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.18); }
+
+  /* Settings cards */
+  .settings-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .settings-card-title { font-family: 'Fredoka One', cursive; font-size: 16px; color: var(--sage); margin-bottom: 4px; }
+  .card-strip { height: 5px; border-radius: 99px; margin-bottom: 10px; }
+
+  @media (max-width: 500px) {
+    .class-stats { grid-template-columns: repeat(3,1fr); }
+    .student-grid { grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); }
+    .site-header h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div id="login-box">
+    <div style="font-size:52px;margin-bottom:8px">🌲</div>
+    <h2>Woodland Points</h2>
+    <p>Sign in to access your classroom</p>
+    <div id="login-error"></div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label class="form-label">Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()" />
+    </div>
+    <div class="form-group" style="margin-bottom:1.25rem">
+      <label class="form-label">Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')window.doLogin()" />
+    </div>
+    <button class="btn btn-primary" onclick="window.doLogin()" style="width:100%;justify-content:center;font-size:15px;padding:10px">
+      <i class="ti ti-login"></i> Sign In
+    </button>
+    <p style="margin-top:1rem;font-size:12px;color:var(--ink-light)">🔒 Your student data is protected</p>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="site-header" style="position:relative">
+    <h1>🌲 Woodland Points 🦔</h1>
+    <p>Track points for your woodland classroom!</p>
+    <div id="sync-status" style="display:inline-block;margin-top:8px;padding:4px 14px;border-radius:99px;font-size:12px;font-weight:700;background:var(--sage-pale);color:var(--ink-mid);position:relative;z-index:1">🌿 Connecting…</div>
+    <button onclick="window.doSignOut()" style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);border-radius:var(--radius-md);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer;z-index:1" title="Sign out"><i class="ti ti-logout"></i> Sign Out</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('students')" id="tab-students"><i class="ti ti-users"></i>Students</button>
+    <button class="tab" onclick="showPanel('behaviors')" id="tab-behaviors"><i class="ti ti-bolt"></i>Behaviors</button>
+    <button class="tab" onclick="showPanel('groups')" id="tab-groups"><i class="ti ti-layout-columns"></i>Groups</button>
+    <button class="tab" onclick="showPanel('store')" id="tab-store"><i class="ti ti-gift"></i>Store</button>
+    <button class="tab" onclick="showPanel('history')" id="tab-history"><i class="ti ti-history"></i>History</button>
+    <button class="tab" onclick="showPanel('settings')" id="tab-settings"><i class="ti ti-settings"></i>Settings</button>
+  </div>
+
+  <!-- Students Panel -->
+  <div class="panel active" id="panel-students">
+    <div class="class-header">
+      <span class="class-title">🐾 My Classroom</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddStudent()"><i class="ti ti-plus"></i> Add Student</button>
+    </div>
+    <div class="class-stats">
+      <div class="stat-card"><div class="stat-label">🐾 Students</div><div class="stat-val" id="stat-count">0</div></div>
+      <div class="stat-card"><div class="stat-label">🌿 Avg Points</div><div class="stat-val" id="stat-avg">0</div></div>
+      <div class="stat-card"><div class="stat-label">🏆 Top Points</div><div class="stat-val" id="stat-top">0</div></div>
+    </div>
+    <div class="select-all-row">
+      <input type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)" style="width:auto;cursor:pointer">
+      <label for="select-all" style="cursor:pointer">Select all</label>
+      <span id="sel-count" style="margin-left:auto;font-size:12px"></span>
+    </div>
+    <div id="selected-bar" class="selected-bar" style="display:none">
+      🐾 Selected: <span class="selected-names" id="sel-names"></span>
+    </div>
+    <div class="quick-actions" id="quick-actions" style="display:none">
+      <span class="section-label" style="margin:0">🌿 Award to selected:</span>
+      <span id="quick-btns"></span>
+      <button class="btn btn-danger btn-sm" onclick="removeSelected()" style="margin-left:auto"><i class="ti ti-trash"></i> Remove Selected</button>
+    </div>
+    <div class="student-grid" id="student-grid"></div>
+  </div>
+
+  <!-- Behaviors Panel -->
+  <div class="panel" id="panel-behaviors">
+    <div class="class-header">
+      <span class="class-title">🍃 Behaviors</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddBehavior()"><i class="ti ti-plus"></i> Add Behavior</button>
+    </div>
+    <div class="section-label">Positive Behaviors</div>
+    <div class="behaviors-list" id="pos-behaviors"></div>
+    <div class="section-label" style="margin-top:1rem">Negative Behaviors</div>
+    <div class="behaviors-list" id="neg-behaviors"></div>
+  </div>
+
+  <!-- Store Panel -->
+  <div class="panel" id="panel-store">
+    <div class="class-header">
+      <span class="class-title">🎁 Reward Store</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddReward()"><i class="ti ti-plus"></i> Add Reward</button>
+    </div>
+    <p style="font-size:13px;color:var(--ink-mid);margin-bottom:1rem;font-weight:600">Students spend their points here. Pick a student, then redeem a reward.</p>
+    <div style="margin-bottom:1.25rem">
+      <label class="form-label">Spending for student:</label>
+      <select id="spend-student" style="width:auto;min-width:200px"></select>
+    </div>
+    <div class="reward-grid" id="reward-grid"></div>
+  </div>
+
+  <!-- History Panel -->
+  <div class="panel" id="panel-history">
+    <div class="class-header">
+      <span class="class-title">📋 Point History</span>
+      <button class="btn btn-danger btn-sm" onclick="clearHistory()"><i class="ti ti-trash"></i> Clear</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+  <!-- Groups Panel -->
+  <div class="panel" id="panel-groups">
+    <div class="class-header">
+      <span class="class-title">👥 Groups</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddGroup()"><i class="ti ti-plus"></i> New Group</button>
+    </div>
+    <div id="groups-list"></div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div class="panel" id="panel-settings">
+    <div class="class-header">
+      <span class="class-title">🔧 Settings</span>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-card-title">☁️ Cloud Sync & Backup</div>
+      <p style="font-size:13px;color:var(--ink-mid);margin-bottom:1rem;font-weight:600">Your data syncs automatically to the cloud whenever you make a change — no manual steps needed. Use export/import below as an extra backup.</p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="btn btn-primary" onclick="exportData()"><i class="ti ti-download"></i> Export Backup</button>
+        <button class="btn" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> Import Backup</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)" />
+      </div>
+
+      <div id="import-status" style="display:none;font-size:13px;font-weight:700;padding:10px 14px;border-radius:var(--radius-md);margin-top:4px"></div>
+
+      <div style="background:var(--sage-pale);border:2px solid var(--sage-light);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;color:var(--ink-mid);font-weight:600">
+        <div style="font-weight:800;color:var(--sage);margin-bottom:4px">🌿 How sync works:</div>
+        <ul style="padding-left:1.2rem;line-height:2">
+          <li>Changes save to the cloud within a second automatically</li>
+          <li>Open the app on any device and it loads your latest data</li>
+          <li>The <strong>☁️ Synced</strong> badge in the header confirms everything is saved</li>
+          <li>Export a backup anytime to keep a local copy of your data</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-card-title">🍄 Quick-Award Buttons</div>
+      <p style="font-size:13px;color:var(--ink-mid);margin-bottom:1rem;font-weight:600">Customize the point buttons shown when students are selected.</p>
+
+      <div class="section-label">Positive buttons</div>
+      <div id="pos-btn-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+      <button class="btn btn-earn btn-sm" onclick="addQuickBtn('pos')"><i class="ti ti-plus"></i> Add positive button</button>
+
+      <div class="section-label" style="margin-top:1.25rem">Negative buttons</div>
+      <div id="neg-btn-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+      <button class="btn btn-lose btn-sm" onclick="addQuickBtn('neg')"><i class="ti ti-plus"></i> Add negative button</button>
+
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:2px solid var(--border);display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-sm" onclick="resetQuickBtns()"><i class="ti ti-refresh"></i> Reset to defaults</button>
+        <button class="btn btn-primary btn-sm" onclick="saveQuickBtns()"><i class="ti ti-check"></i> Save buttons</button>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-card-title">👀 Preview</div>
+      <p style="font-size:13px;color:var(--ink-mid);margin-bottom:0.75rem;font-weight:600">This is how your buttons will look.</p>
+      <div id="btn-preview" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="modal-add-student" class="modal-overlay" style="display:none" onclick="closeModal('modal-add-student')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">🐾 Add Student</div>
+    <div class="form-group"><label class="form-label">Name</label><input type="text" id="new-student-name" placeholder="Student name" onkeydown="if(event.key==='Enter')addStudent()" /></div>
+    <div class="form-group"><label class="form-label">Starting Points</label><input type="number" id="new-student-pts" value="0" min="0" /></div>
+    <div class="form-group">
+      <label class="form-label">Avatar</label>
+      <div class="emoji-picker-grid" id="emoji-picker"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-student')">Cancel</button>
+      <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-behavior" class="modal-overlay" style="display:none" onclick="closeModal('modal-add-behavior')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">🍃 Add Behavior</div>
+    <div class="form-group"><label class="form-label">Name</label><input type="text" id="new-beh-name" placeholder="e.g. Helping a friend" /></div>
+    <div class="form-group"><label class="form-label">Points (use negative for bad behaviors)</label><input type="number" id="new-beh-pts" value="1" /></div>
+    <div class="form-group"><label class="form-label">Emoji</label><input type="text" id="new-beh-emoji" value="⭐" maxlength="4" style="width:60px" /></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-behavior')">Cancel</button>
+      <button class="btn btn-primary" onclick="addBehavior()">Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-reward" class="modal-overlay" style="display:none" onclick="closeModal('modal-add-reward')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">🌰 Add Reward</div>
+    <div class="form-group"><label class="form-label">Name</label><input type="text" id="new-rew-name" placeholder="e.g. Free homework pass" /></div>
+    <div class="form-group"><label class="form-label">Point Cost</label><input type="number" id="new-rew-cost" value="10" min="1" /></div>
+    <div class="form-group"><label class="form-label">Emoji</label><input type="text" id="new-rew-emoji" value="🎟️" maxlength="4" style="width:60px" /></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-reward')">Cancel</button>
+      <button class="btn btn-primary" onclick="addReward()">Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-student-detail" class="modal-overlay" style="display:none" onclick="closeModal('modal-student-detail')">
+  <div class="modal" onclick="event.stopPropagation()" style="width:380px">
+    <div id="detail-header" style="text-align:center;margin-bottom:1rem"></div>
+
+    <div style="border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:10px 12px;margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:800;color:var(--ink-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">✏️ Edit Student</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+        <input type="text" id="edit-student-name" placeholder="Name" style="flex:1" />
+        <button class="btn btn-primary btn-sm" onclick="saveStudentName()"><i class="ti ti-check"></i> Save</button>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;font-weight:500">Avatar</div>
+      <div id="detail-emoji-picker" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:1rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-earn btn-sm" onclick="adjustPoints(1,'Manual +1')"><i class="ti ti-plus"></i> +1</button>
+      <button class="btn btn-earn btn-sm" onclick="adjustPoints(5,'Manual +5')"><i class="ti ti-plus"></i> +5</button>
+      <button class="btn btn-earn btn-sm" onclick="adjustPoints(10,'Manual +10')"><i class="ti ti-plus"></i> +10</button>
+      <button class="btn btn-lose btn-sm" onclick="adjustPoints(-1,'Manual -1')"><i class="ti ti-minus"></i> -1</button>
+      <button class="btn btn-lose btn-sm" onclick="adjustPoints(-5,'Manual -5')"><i class="ti ti-minus"></i> -5</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem">
+      <input type="number" id="custom-pts" placeholder="Custom amount" style="flex:1" />
+      <input type="text" id="custom-reason" placeholder="Reason" style="flex:1.5" />
+      <button class="btn btn-primary btn-sm" onclick="applyCustom()">Apply</button>
+    </div>
+    <button class="btn btn-danger btn-sm" onclick="removeStudent()" style="width:100%"><i class="ti ti-trash"></i> Remove Student</button>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-student-detail')">Done</button></div>
+  </div>
+</div>
+
+<div id="modal-apply-behavior" class="modal-overlay" style="display:none" onclick="closeModal('modal-apply-behavior')">
+  <div class="modal" onclick="event.stopPropagation()" style="width:380px">
+    <div class="modal-title" id="beh-apply-title">Apply Behavior</div>
+    <div class="form-group">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <label class="form-label" style="margin:0">Students</label>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="behSelectAll(true)" style="font-size:11px;padding:3px 8px">All</button>
+          <button class="btn btn-sm" onclick="behSelectAll(false)" style="font-size:11px;padding:3px 8px">None</button>
+        </div>
+      </div>
+      <div id="beh-student-list" style="max-height:240px;overflow-y:auto;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);padding:4px"></div>
+    </div>
+    <div id="beh-apply-summary" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;min-height:18px"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-apply-behavior')">Cancel</button>
+      <button class="btn btn-primary" onclick="applyBehaviorConfirm()">Apply to Selected</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-group" class="modal-overlay" style="display:none" onclick="closeModal('modal-add-group')">
+  <div class="modal" onclick="event.stopPropagation()" style="width:400px">
+    <div class="modal-title" id="add-group-title">New Group</div>
+    <div class="form-group">
+      <label class="form-label">Group Name</label>
+      <input type="text" id="new-group-name" placeholder="e.g. Table 1, Red Team…" onkeydown="if(event.key==='Enter')saveGroup()" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Color</label>
+      <div id="group-color-picker" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"></div>
+    </div>
+    <div class="form-group">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <label class="form-label" style="margin:0">Members</label>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" onclick="groupMemberSelectAll(true)" style="font-size:11px;padding:3px 8px">All</button>
+          <button class="btn btn-sm" onclick="groupMemberSelectAll(false)" style="font-size:11px;padding:3px 8px">None</button>
+        </div>
+      </div>
+      <div id="group-member-list" style="max-height:200px;overflow-y:auto;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);padding:4px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-add-group')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGroup()">Save Group</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+// ============================================================
+//  PASTE YOUR FIREBASE CONFIG HERE
+//  (replace every value below with your own from Firebase)
+// ============================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCOnWHJRQugslnnHHtsVFFcaeUFCQf937A",
+  authDomain:        "behavior-point-system.firebaseapp.com",
+  projectId:         "behavior-point-system",
+  storageBucket:     "behavior-point-system.firebasestorage.app",
+  messagingSenderId: "250775154202",
+  appId:             "1:250775154202:web:4f31d266c17d1bc3e22ba3"
+};
+// ============================================================
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const DOC  = doc(db, 'classroom', 'data');
+
+let firestoreUnsub = null; // holds the Firestore listener so we can detach on sign-out
+
+// ── Auth: login / logout ──────────────────────────────────────
+window.doLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  const btn = document.querySelector('#login-box button');
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = e.code === 'auth/invalid-credential'
+      ? '❌ Incorrect email or password.'
+      : `❌ ${e.message}`;
+    errEl.style.display = 'block';
+    btn.innerHTML = '<i class="ti ti-login"></i> Sign In'; btn.disabled = false;
+  }
+};
+
+window.doSignOut = async () => {
+  if (!confirm('Sign out?')) return;
+  if (firestoreUnsub) { firestoreUnsub(); firestoreUnsub = null; }
+  await signOut(auth);
+};
+
+// Watch auth state — show login or app accordingly
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    startFirestore();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    const btn = document.querySelector('#login-box button');
+    if (btn) { btn.innerHTML = '<i class="ti ti-login"></i> Sign In'; btn.disabled = false; }
+    if (firestoreUnsub) { firestoreUnsub(); firestoreUnsub = null; }
+  }
+});
+
+// Show a sync status indicator
+function setSyncStatus(state) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  const states = {
+    syncing: { text: '🔄 Saving…',  color: 'var(--honey)',      bg: 'var(--honey-light)' },
+    saved:   { text: '☁️ Synced',   color: 'var(--earn-dark)',  bg: 'var(--earn-light)'  },
+    error:   { text: '⚠️ Offline',  color: 'var(--lose-dark)',  bg: 'var(--lose-light)'  },
+    loading: { text: '🌿 Loading…', color: 'var(--ink-mid)',    bg: 'var(--sage-pale)'   },
+  };
+  const s = states[state] || states.saved;
+  el.textContent = s.text;
+  el.style.color = s.color;
+  el.style.background = s.bg;
+}
+
+// Debounce saves so rapid changes don't spam Firestore
+let saveTimer = null;
+function saveData() {
+  // Also write to localStorage as offline fallback
+  try { localStorage.setItem('classroom_bp_v1', JSON.stringify({ students, behaviors, rewards, history, nextId, quickBtns, groups })); } catch(e) {}
+  setSyncStatus('syncing');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await setDoc(DOC, { students, behaviors, rewards, history, nextId, quickBtns, groups });
+      setSyncStatus('saved');
+    } catch(e) {
+      setSyncStatus('error');
+      console.error('Firebase save error:', e);
+    }
+  }, 800);
+}
+
+const DEFAULT_QUICK_BTNS = [1, 2, 5, -1, -2];
+const GROUP_COLORS = ['#6C63FF','#22c55e','#ef4444','#f59e0b','#3b82f6','#ec4899','#14b8a6','#f97316','#8b5cf6','#84cc16'];
+
+// Load from localStorage immediately so the app isn't blank while Firebase loads
+const localRaw = (() => { try { const r = localStorage.getItem('classroom_bp_v1'); return r ? JSON.parse(r) : null; } catch(e) { return null; } })();
+
+let quickBtns = localRaw?.quickBtns || [...DEFAULT_QUICK_BTNS];
+let groups    = localRaw?.groups    || [];
+let students  = localRaw?.students  || [
+  {id:1,name:'Alex Rivera',points:12,emoji:'🦊'},
+  {id:2,name:'Jordan Lee',points:8,emoji:'🐻'},
+  {id:3,name:'Casey Morgan',points:15,emoji:'🦔'},
+  {id:4,name:'Taylor Kim',points:5,emoji:'🦉'},
+  {id:5,name:'Riley Chen',points:20,emoji:'🐿️'},
+  {id:6,name:'Sam Patel',points:3,emoji:'🦡'},
+];
+let behaviors = localRaw?.behaviors || [
+  {id:1,name:'Helping a classmate',pts:2,emoji:'🤝'},
+  {id:2,name:'Outstanding work',pts:5,emoji:'⭐'},
+  {id:3,name:'On time & ready',pts:1,emoji:'✅'},
+  {id:4,name:'Participating',pts:1,emoji:'🙋'},
+  {id:5,name:'Disrupting class',pts:-2,emoji:'😤'},
+  {id:6,name:'Not following rules',pts:-1,emoji:'⚠️'},
+  {id:7,name:'Missing homework',pts:-3,emoji:'📚'},
+];
+let rewards = localRaw?.rewards || [
+  {id:1,name:'Homework pass',cost:15,emoji:'🎟️'},
+  {id:2,name:'Extra recess',cost:20,emoji:'⛹️'},
+  {id:3,name:'Sit with a friend',cost:10,emoji:'🪑'},
+  {id:4,name:'Choose class activity',cost:30,emoji:'🎮'},
+  {id:5,name:'Prize box pick',cost:25,emoji:'🎁'},
+];
+let history = localRaw?.history || [];
+let nextId  = localRaw?.nextId  || 20;
+let selected = new Set();
+let activeStudentId = null;
+let activeBehaviorId = null;
+const avatars = ['🦊','🐻','🦔','🦉','🐿️','🦡','🐰','🦌','🐺','🦝','🐢','🦋','🐸','🐦','🐝','🦎','🐛','🌿','🍄'];
+
+// ── Firestore sync ────────────────────────────────────────────
+function startFirestore() {
+  setSyncStatus('loading');
+  let isFirstLoad = true;
+  firestoreUnsub = onSnapshot(DOC, (snap) => {
+    if (snap.exists()) {
+      const d = snap.data();
+      students  = d.students  || students;
+      behaviors = d.behaviors || behaviors;
+      rewards   = d.rewards   || rewards;
+      history   = d.history   || history;
+      groups    = d.groups    || groups;
+      quickBtns = d.quickBtns || quickBtns;
+      nextId    = d.nextId    || nextId;
+      const active = document.querySelector('.panel.active');
+      if (active) {
+        const name = active.id.replace('panel-','');
+        if (name==='students') renderStudents();
+        if (name==='behaviors') renderBehaviors();
+        if (name==='store') renderStore();
+        if (name==='history') renderHistory();
+        if (name==='groups') renderGroups();
+        if (name==='settings') renderSettings();
+      }
+      renderQuickBtns();
+      setSyncStatus('saved');
+      if (isFirstLoad) { isFirstLoad = false; }
+    } else if (isFirstLoad) {
+      isFirstLoad = false;
+      saveData();
+    }
+  }, (err) => {
+    setSyncStatus('error');
+    console.error('Firebase listener error:', err);
+  });
+}
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='store') renderStore();
+  if(name==='behaviors') renderBehaviors();
+  if(name==='history') renderHistory();
+  if(name==='students') renderStudents();
+  if(name==='settings') renderSettings();
+  if(name==='groups') renderGroups();
+}
+
+function renderQuickBtns() {
+  const container = document.getElementById('quick-btns');
+  if (!container) return;
+  const sorted = [...quickBtns].sort((a,b)=>b-a);
+  container.innerHTML = sorted.map(v => {
+    const pos = v > 0;
+    return `<button class="btn ${pos?'btn-earn':'btn-lose'} btn-sm" onclick="quickAward(${v},'${pos?'Positive':'Negative'}')">
+      <i class="ti ti-${pos?'plus':'minus'}"></i> ${pos?'+':''}${v}
+    </button>`;
+  }).join('');
+}
+
+function renderSettings() {
+  const pos = quickBtns.filter(v=>v>0).sort((a,b)=>a-b);
+  const neg = quickBtns.filter(v=>v<0).sort((a,b)=>b-a);
+  document.getElementById('pos-btn-list').innerHTML = pos.map((v,i)=>btnRow(v,'pos',i)).join('') || '<div style="font-size:13px;color:var(--color-text-secondary)">No positive buttons.</div>';
+  document.getElementById('neg-btn-list').innerHTML = neg.map((v,i)=>btnRow(v,'neg',i)).join('') || '<div style="font-size:13px;color:var(--color-text-secondary)">No negative buttons.</div>';
+  renderBtnPreview();
+}
+
+function btnRow(v, type, i) {
+  const dataType = `data-type="${type}" data-idx="${i}"`;
+  return `<div style="display:flex;align-items:center;gap:8px" ${dataType}>
+    <input type="number" class="qb-input" value="${Math.abs(v)}" min="1" max="999" ${dataType} oninput="renderBtnPreview()" style="width:80px">
+    <span style="font-size:13px;color:var(--color-text-secondary)">${type==='pos'?'points earned':'points deducted'}</span>
+    <button class="btn btn-sm" style="margin-left:auto;color:var(--color-text-secondary)" onclick="removeQuickBtnRow(this)" ${dataType} title="Remove"><i class="ti ti-x"></i></button>
+  </div>`;
+}
+
+function addQuickBtn(type) {
+  const list = document.getElementById(type+'-btn-list');
+  const existing = [...list.querySelectorAll('.qb-input')];
+  const newIdx = existing.length;
+  const div = document.createElement('div');
+  div.innerHTML = btnRow(type==='pos'?1:-1, type, newIdx);
+  list.appendChild(div.firstElementChild);
+  renderBtnPreview();
+}
+
+function removeQuickBtnRow(btn) {
+  btn.closest('div[data-type]').remove();
+  renderBtnPreview();
+}
+
+function renderBtnPreview() {
+  const inputs = document.querySelectorAll('.qb-input');
+  const vals = [...inputs].map(inp => {
+    const v = parseInt(inp.value)||1;
+    return inp.dataset.type === 'pos' ? v : -v;
+  }).filter(v=>v!==0);
+  const sorted = vals.sort((a,b)=>b-a);
+  document.getElementById('btn-preview').innerHTML = sorted.map(v=>{
+    const pos = v>0;
+    return `<button class="btn ${pos?'btn-earn':'btn-lose'} btn-sm" style="cursor:default">
+      <i class="ti ti-${pos?'plus':'minus'}"></i> ${pos?'+':''}${v}
+    </button>`;
+  }).join('') + `<button class="btn btn-danger btn-sm" style="cursor:default;margin-left:auto"><i class="ti ti-trash"></i> Remove Selected</button>`;
+}
+
+function saveQuickBtns() {
+  const inputs = document.querySelectorAll('.qb-input');
+  const vals = [...inputs].map(inp => {
+    const v = parseInt(inp.value)||1;
+    return inp.dataset.type === 'pos' ? Math.abs(v) : -Math.abs(v);
+  }).filter(v=>v!==0);
+  if (!vals.length) { showToast('Add at least one button.'); return; }
+  quickBtns = [...new Set(vals)];
+  renderQuickBtns(); saveData();
+  showToast('Quick-award buttons saved!');
+}
+
+function resetQuickBtns() {
+  quickBtns = [...DEFAULT_QUICK_BTNS];
+  renderSettings(); renderQuickBtns(); saveData();
+  showToast('Buttons reset to defaults.');
+}
+
+function avatarBg(e) {
+  const colors = ['#dff0d8','#fdf0e0','#e8f5e3','#fde8e4','#f5ede4','#e8f0e0','#fef9e0','#e0f0f5'];
+  return colors[e.charCodeAt(0) % colors.length];
+}
+
+let editingGroupId = null;
+
+function renderGroups() {
+  const container = document.getElementById('groups-list');
+  if (!groups.length) {
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-layout-columns"></i>No groups yet. Create one to award points to a whole team at once!</div>`;
+    return;
+  }
+  container.innerHTML = groups.map(g => {
+    const members = students.filter(s => g.memberIds.includes(s.id));
+    const totalPts = members.reduce((a,s)=>a+s.points,0);
+    const avgPts = members.length ? Math.round(totalPts/members.length) : 0;
+    const chips = members.length
+      ? members.map(s=>`<div class="group-member-chip"><span>${s.emoji}</span>${escHtml(s.name.split(' ')[0])}</div>`).join('')
+      : `<span style="font-size:13px;color:var(--color-text-secondary)">No members yet.</span>`;
+    const quickBtnsHtml = [...quickBtns].sort((a,b)=>b-a).map(v=>{
+      const pos = v>0;
+      return `<button class="btn ${pos?'btn-earn':'btn-lose'} btn-sm" onclick="awardGroup(${g.id},${v})">
+        <i class="ti ti-${pos?'plus':'minus'}"></i>${pos?'+':''}${v}
+      </button>`;
+    }).join('');
+    return `
+    <div class="group-card">
+      <div class="group-card-header">
+        <div class="group-color-dot" style="background:${g.color}"></div>
+        <span class="group-name">${escHtml(g.name)}</span>
+        <span class="group-member-count">${members.length} student${members.length!==1?'s':''} · avg ${avgPts} pts</span>
+        <button class="btn btn-sm" onclick="openEditGroup(${g.id})" title="Edit group"><i class="ti ti-edit"></i></button>
+        <button class="btn btn-sm" onclick="deleteGroup(${g.id})" title="Delete group" style="color:var(--lose-dark)"><i class="ti ti-trash"></i></button>
+      </div>
+      <div class="group-card-body">
+        <div class="group-members-row">${chips}</div>
+        <div class="group-actions">
+          <span class="section-label" style="margin:0">Award group:</span>
+          ${quickBtnsHtml}
+          <div style="display:flex;gap:6px;margin-left:auto;align-items:center">
+            <input type="number" id="grp-custom-${g.id}" placeholder="Custom" style="width:80px;padding:5px 8px;font-size:12px" />
+            <input type="text" id="grp-reason-${g.id}" placeholder="Reason (optional)" style="width:130px;padding:5px 8px;font-size:12px" />
+            <button class="btn btn-primary btn-sm" onclick="awardGroupCustom(${g.id})">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function awardGroup(groupId, pts) {
+  const g = groups.find(x=>x.id===groupId);
+  if (!g) return;
+  const members = students.filter(s=>g.memberIds.includes(s.id));
+  if (!members.length) { showToast('No members in this group!'); return; }
+  members.forEach(s => {
+    s.points = Math.max(0, s.points+pts);
+    addHistory(s.name, pts, `Group: ${g.name}`);
+  });
+  renderGroups(); renderStudents(); saveData();
+  showToast(`${pts>0?'+':''}${pts} pts to ${g.name} (${members.length} students)`);
+}
+
+function awardGroupCustom(groupId) {
+  const g = groups.find(x=>x.id===groupId);
+  if (!g) return;
+  const pts = parseInt(document.getElementById(`grp-custom-${groupId}`).value);
+  if (isNaN(pts)||pts===0) { showToast('Enter a point value first.'); return; }
+  const reason = document.getElementById(`grp-reason-${groupId}`).value.trim() || `Group: ${g.name}`;
+  const members = students.filter(s=>g.memberIds.includes(s.id));
+  if (!members.length) { showToast('No members in this group!'); return; }
+  members.forEach(s => {
+    s.points = Math.max(0, s.points+pts);
+    addHistory(s.name, pts, reason);
+  });
+  document.getElementById(`grp-custom-${groupId}`).value = '';
+  document.getElementById(`grp-reason-${groupId}`).value = '';
+  renderGroups(); renderStudents(); saveData();
+  showToast(`${pts>0?'+':''}${pts} pts to ${g.name}!`);
+}
+
+function openAddGroup() {
+  editingGroupId = null;
+  document.getElementById('add-group-title').textContent = 'New Group';
+  document.getElementById('new-group-name').value = '';
+  window._pickedGroupColor = GROUP_COLORS[groups.length % GROUP_COLORS.length];
+  renderGroupColorPicker();
+  renderGroupMemberList([]);
+  document.getElementById('modal-add-group').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-group-name').focus(), 50);
+}
+
+function openEditGroup(id) {
+  const g = groups.find(x=>x.id===id);
+  if (!g) return;
+  editingGroupId = id;
+  document.getElementById('add-group-title').textContent = 'Edit Group';
+  document.getElementById('new-group-name').value = g.name;
+  window._pickedGroupColor = g.color;
+  renderGroupColorPicker();
+  renderGroupMemberList(g.memberIds);
+  document.getElementById('modal-add-group').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-group-name').focus(), 50);
+}
+
+function renderGroupColorPicker() {
+  document.getElementById('group-color-picker').innerHTML = GROUP_COLORS.map(c=>`
+    <div class="color-swatch${c===window._pickedGroupColor?' selected':''}" style="background:${c}" onclick="pickGroupColor('${c}')" title="${c}"></div>
+  `).join('');
+}
+
+function pickGroupColor(c) {
+  window._pickedGroupColor = c;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  event.target.classList.add('selected');
+}
+
+function renderGroupMemberList(checkedIds) {
+  const list = document.getElementById('group-member-list');
+  if (!students.length) { list.innerHTML='<div style="padding:10px;font-size:13px;color:var(--color-text-secondary)">No students added yet.</div>'; return; }
+  list.innerHTML = students.map(s=>`
+    <label class="beh-student-row">
+      <input type="checkbox" class="grp-member-chk" value="${s.id}" ${checkedIds.includes(s.id)?'checked':''}>
+      <span style="font-size:18px">${s.emoji}</span>
+      <span class="bsr-name">${escHtml(s.name)}</span>
+      <span class="bsr-pts">${s.points} pts</span>
+    </label>`).join('');
+}
+
+function groupMemberSelectAll(v) {
+  document.querySelectorAll('.grp-member-chk').forEach(c=>c.checked=v);
+}
+
+function saveGroup() {
+  const name = document.getElementById('new-group-name').value.trim();
+  if (!name) { document.getElementById('new-group-name').focus(); return; }
+  const memberIds = [...document.querySelectorAll('.grp-member-chk:checked')].map(c=>parseInt(c.value));
+  const color = window._pickedGroupColor || GROUP_COLORS[0];
+  if (editingGroupId) {
+    const g = groups.find(x=>x.id===editingGroupId);
+    if (g) { g.name=name; g.color=color; g.memberIds=memberIds; }
+    showToast('Group updated!');
+  } else {
+    groups.push({id:nextId++, name, color, memberIds});
+    showToast('Group created!');
+  }
+  closeModal('modal-add-group');
+  renderGroups(); saveData();
+}
+
+function deleteGroup(id) {
+  const g = groups.find(x=>x.id===id);
+  if (!g || !confirm(`Delete group "${g.name}"?`)) return;
+  groups = groups.filter(x=>x.id!==id);
+  renderGroups(); saveData();
+  showToast('Group deleted.');
+}
+
+function exportData() {
+  const data = { students, behaviors, rewards, history, groups, quickBtns, nextId, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).replace(/ /g,'-');
+  a.href = url;
+  a.download = `woodland-points-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported! Save that file somewhere safe 🌿');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  const statusEl = document.getElementById('import-status');
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.students || !data.behaviors || !data.rewards) throw new Error('Invalid file format');
+      if (!confirm(`This will replace ALL current data with the imported file.\n\nImported: ${data.students.length} students, ${data.behaviors.length} behaviors, ${data.rewards.length} rewards.\n\nContinue?`)) {
+        event.target.value = '';
+        return;
+      }
+      students   = data.students   || [];
+      behaviors  = data.behaviors  || [];
+      rewards    = data.rewards    || [];
+      history    = data.history    || [];
+      groups     = data.groups     || [];
+      quickBtns  = data.quickBtns  || [...DEFAULT_QUICK_BTNS];
+      nextId     = data.nextId     || 100;
+      saveData();
+      renderStudents();
+      renderQuickBtns();
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'var(--earn-light)';
+      statusEl.style.color = 'var(--earn-dark)';
+      statusEl.style.border = '2px solid var(--earn)';
+      statusEl.textContent = `✅ Imported successfully! ${students.length} students, ${behaviors.length} behaviors, ${rewards.length} rewards loaded.`;
+      showToast('Import successful! 🌿');
+    } catch(err) {
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'var(--lose-light)';
+      statusEl.style.color = 'var(--lose-dark)';
+      statusEl.style.border = '2px solid var(--lose)';
+      statusEl.textContent = '❌ Import failed — make sure you selected a valid Woodland Points export file.';
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function renderStudents() {
+  const grid = document.getElementById('student-grid');
+  if (!students.length) {
+    grid.innerHTML = '<div class="empty-state"><i class="ti ti-users"></i>No students yet. Add one above!</div>';
+    updateStats(); return;
+  }
+  grid.innerHTML = [...students].sort((a,b)=>a.name.localeCompare(b.name)).map(s => `
+    <div class="student-card${selected.has(s.id)?' selected':''}" id="scard-${s.id}" onclick="toggleSelect(${s.id},event)" ondblclick="openStudentDetail(${s.id})">
+      <div class="avatar" style="background:${avatarBg(s.emoji)}">${s.emoji}</div>
+      <div class="student-name">${escHtml(s.name)}</div>
+      <div class="student-points">${s.points}</div>
+      <div class="points-label">points</div>
+      <span class="point-flash" id="flash-${s.id}"></span>
+    </div>
+  `).join('');
+  updateStats();
+  updateSelectionUI();
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function updateStats() {
+  document.getElementById('stat-count').textContent = students.length;
+  if (!students.length) { document.getElementById('stat-avg').textContent='0'; document.getElementById('stat-top').textContent='0'; return; }
+  const avg = Math.round(students.reduce((a,s)=>a+s.points,0)/students.length);
+  const top = Math.max(...students.map(s=>s.points));
+  document.getElementById('stat-avg').textContent = avg;
+  document.getElementById('stat-top').textContent = top;
+}
+
+function toggleSelect(id, e) {
+  if (e && e.detail > 1) return;
+  if (selected.has(id)) selected.delete(id); else selected.add(id);
+  const card = document.getElementById('scard-'+id);
+  if (card) card.classList.toggle('selected', selected.has(id));
+  updateSelectionUI();
+}
+
+function toggleSelectAll(v) {
+  if (v) students.forEach(s=>selected.add(s.id)); else selected.clear();
+  renderStudents();
+}
+
+function updateSelectionUI() {
+  const bar = document.getElementById('selected-bar');
+  const qa = document.getElementById('quick-actions');
+  const sc = document.getElementById('sel-count');
+  const sa = document.getElementById('select-all');
+  if (selected.size) {
+    const names = students.filter(s=>selected.has(s.id)).map(s=>s.name.split(' ')[0]).join(', ');
+    document.getElementById('sel-names').textContent = names;
+    bar.style.display = 'flex'; qa.style.display = 'flex';
+    sc.textContent = `${selected.size} selected`;
+  } else {
+    bar.style.display = 'none'; qa.style.display = 'none';
+    sc.textContent = '';
+  }
+  if (sa) sa.checked = selected.size === students.length && students.length > 0;
+}
+
+function quickAward(pts, reason) {
+  selected.forEach(id => {
+    const s = students.find(x=>x.id===id);
+    if (s) { s.points = Math.max(0, s.points+pts); flashCard(id,pts); addHistory(s.name,pts,reason); }
+  });
+  renderStudents(); saveData();
+  showToast(`${pts>0?'+':''}${pts} points to ${selected.size} student${selected.size>1?'s':''}!`);
+}
+
+function flashCard(id, pts) {
+  const el = document.getElementById('flash-'+id);
+  if (!el) return;
+  el.textContent = (pts>0?'+':'')+pts;
+  el.style.color = pts>0?'var(--earn)':'var(--lose)';
+  el.style.opacity = '1';
+  setTimeout(()=>{ if(el) el.style.opacity='0'; }, 1000);
+}
+
+function openAddStudent() {
+  const ep = document.getElementById('emoji-picker');
+  window._pickedEmoji = avatars[Math.floor(Math.random()*avatars.length)];
+  ep.innerHTML = avatars.map(e => `<button class="ep-btn${e===window._pickedEmoji?' selected':''}" onclick="pickEmoji('${e}')" id="ep-${e}">${e}</button>`).join('');
+  document.getElementById('new-student-name').value = '';
+  document.getElementById('new-student-pts').value = '0';
+  document.getElementById('modal-add-student').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-student-name').focus(), 50);
+}
+
+function pickEmoji(e) {
+  window._pickedEmoji = e;
+  document.querySelectorAll('.ep-btn').forEach(b=>b.classList.remove('selected'));
+  const btn = document.getElementById('ep-'+e);
+  if (btn) btn.classList.add('selected');
+}
+
+function addStudent() {
+  const name = document.getElementById('new-student-name').value.trim();
+  if (!name) { document.getElementById('new-student-name').focus(); return; }
+  const pts = parseInt(document.getElementById('new-student-pts').value)||0;
+  students.push({id:nextId++, name, points:Math.max(0,pts), emoji:window._pickedEmoji||'🦊'});
+  closeModal('modal-add-student');
+  renderStudents(); saveData();
+  showToast('Student added!');
+}
+
+function removeSelected() {
+  const count = selected.size;
+  if (!count) return;
+  const names = students.filter(s=>selected.has(s.id)).map(s=>s.name).join(', ');
+  if (!confirm(`Remove ${count} student${count>1?'s':''}?\n${names}`)) return;
+  students = students.filter(s=>!selected.has(s.id));
+  selected.clear();
+  renderStudents(); saveData();
+  showToast(`${count} student${count>1?'s':''} removed.`);
+}
+
+function openStudentDetail(id) {
+  activeStudentId = id;
+  const s = students.find(x=>x.id===id);
+  window._detailEmoji = s.emoji;
+  document.getElementById('detail-header').innerHTML = `
+    <div style="font-size:44px" id="detail-avatar">${s.emoji}</div>
+    <div style="font-size:16px;font-weight:600;margin:6px 0 2px" id="detail-name">${escHtml(s.name)}</div>
+    <div style="font-size:26px;font-weight:600" id="detail-pts">${s.points} <span style="font-size:14px;font-weight:400;color:var(--ink-light)">points</span></div>`;
+  document.getElementById('edit-student-name').value = s.name;
+  document.getElementById('detail-emoji-picker').innerHTML = avatars.map(e =>
+    `<button class="ep-btn${e===s.emoji?' selected':''}" onclick="pickDetailEmoji('${e}')" style="font-size:20px;padding:3px">${e}</button>`
+  ).join('');
+  document.getElementById('custom-pts').value = '';
+  document.getElementById('custom-reason').value = '';
+  document.getElementById('modal-student-detail').style.display = 'flex';
+  setTimeout(()=>document.getElementById('edit-student-name').focus(), 50);
+}
+
+function pickDetailEmoji(e) {
+  window._detailEmoji = e;
+  document.querySelectorAll('#detail-emoji-picker .ep-btn').forEach(b=>b.classList.remove('selected'));
+  event.target.classList.add('selected');
+  const av = document.getElementById('detail-avatar');
+  if (av) av.textContent = e;
+}
+
+function saveStudentName() {
+  const s = students.find(x=>x.id===activeStudentId);
+  if (!s) return;
+  const newName = document.getElementById('edit-student-name').value.trim();
+  if (!newName) { document.getElementById('edit-student-name').focus(); return; }
+  s.name = newName;
+  s.emoji = window._detailEmoji || s.emoji;
+  const dn = document.getElementById('detail-name');
+  if (dn) dn.textContent = newName;
+  const av = document.getElementById('detail-avatar');
+  if (av) av.textContent = s.emoji;
+  renderStudents(); saveData();
+  showToast('Student updated!');
+}
+
+function adjustPoints(pts, reason) {
+  const s = students.find(x=>x.id===activeStudentId);
+  if (!s) return;
+  s.points = Math.max(0, s.points+pts);
+  addHistory(s.name, pts, reason);
+  const dp = document.getElementById('detail-pts');
+  if (dp) dp.innerHTML = `${s.points} <span style="font-size:14px;font-weight:400;color:var(--ink-light)">points</span>`;
+  renderStudents(); saveData();
+  showToast(`${pts>0?'+':''}${pts} for ${s.name}`);
+}
+
+function applyCustom() {
+  const pts = parseInt(document.getElementById('custom-pts').value);
+  if (isNaN(pts)||pts===0) return;
+  const reason = document.getElementById('custom-reason').value.trim() || 'Manual adjustment';
+  adjustPoints(pts, reason);
+  document.getElementById('custom-pts').value = '';
+  document.getElementById('custom-reason').value = '';
+}
+
+function removeStudent() {
+  if (!confirm('Remove this student?')) return;
+  students = students.filter(x=>x.id!==activeStudentId);
+  selected.delete(activeStudentId);
+  closeModal('modal-student-detail');
+  renderStudents(); saveData();
+  showToast('Student removed.');
+}
+
+function renderBehaviors() {
+  const pos = behaviors.filter(b=>b.pts>0).sort((a,b)=>a.name.localeCompare(b.name));
+  const neg = behaviors.filter(b=>b.pts<0).sort((a,b)=>a.name.localeCompare(b.name));
+  const html = (list) => list.map(b=>`
+    <div class="behavior-row" ondblclick="openEditBehavior(${b.id})" title="Double-click to edit">
+      <span class="behavior-emoji">${b.emoji}</span>
+      <div class="behavior-info">
+        <div class="behavior-name">${escHtml(b.name)}</div>
+        <div class="behavior-pts">${b.pts>0?'+':''}${b.pts} points</div>
+      </div>
+      <div style="display:flex;gap:6px;margin-left:auto">
+        <button class="btn ${b.pts>0?'btn-earn':'btn-lose'} btn-sm" onclick="openApplyBehavior(${b.id})">Apply</button>
+        <button class="btn btn-sm" onclick="openEditBehavior(${b.id})" title="Edit"><i class="ti ti-edit"></i></button>
+        <button class="btn btn-sm" onclick="removeBehavior(${b.id})" title="Remove"><i class="ti ti-x"></i></button>
+      </div>
+    </div>`).join('');
+  document.getElementById('pos-behaviors').innerHTML = pos.length ? html(pos) : '<div style="color:var(--ink-light);font-size:13px;padding:8px 0">None yet.</div>';
+  document.getElementById('neg-behaviors').innerHTML = neg.length ? html(neg) : '<div style="color:var(--ink-light);font-size:13px;padding:8px 0">None yet.</div>';
+}
+
+function openApplyBehavior(id) {
+  activeBehaviorId = id;
+  const b = behaviors.find(x=>x.id===id);
+  document.getElementById('beh-apply-title').textContent = `${b.emoji} ${b.name} (${b.pts>0?'+':''}${b.pts})`;
+  renderBehStudentList();
+  document.getElementById('modal-apply-behavior').style.display = 'flex';
+}
+
+function renderBehStudentList() {
+  const list = document.getElementById('beh-student-list');
+  if (!students.length) { list.innerHTML='<div style="padding:12px;font-size:13px;color:var(--color-text-secondary)">No students added yet.</div>'; return; }
+  list.innerHTML = students.map(s=>`
+    <label class="beh-student-row">
+      <input type="checkbox" class="beh-chk" value="${s.id}" onchange="updateBehSummary()">
+      <span style="font-size:20px">${s.emoji}</span>
+      <span class="bsr-name">${escHtml(s.name)}</span>
+      <span class="bsr-pts">${s.points} pts</span>
+    </label>`).join('');
+  updateBehSummary();
+}
+
+function behSelectAll(v) {
+  document.querySelectorAll('.beh-chk').forEach(c=>c.checked=v);
+  updateBehSummary();
+}
+
+function updateBehSummary() {
+  const checked = document.querySelectorAll('.beh-chk:checked');
+  const sumEl = document.getElementById('beh-apply-summary');
+  sumEl.textContent = checked.length ? `${checked.length} student${checked.length>1?'s':''} selected` : 'No students selected';
+}
+
+function applyBehaviorConfirm() {
+  const b = behaviors.find(x=>x.id===activeBehaviorId);
+  const checked = [...document.querySelectorAll('.beh-chk:checked')];
+  if (!b || !checked.length) { showToast('Select at least one student.'); return; }
+  checked.forEach(chk => {
+    const s = students.find(x=>x.id===parseInt(chk.value));
+    if (s) { s.points = Math.max(0, s.points+b.pts); addHistory(s.name, b.pts, b.name); }
+  });
+  closeModal('modal-apply-behavior');
+  renderStudents(); renderBehaviors(); saveData();
+  const names = checked.length === 1
+    ? students.find(x=>x.id===parseInt(checked[0].value))?.name
+    : `${checked.length} students`;
+  showToast(`${b.emoji} ${b.name} applied to ${names}!`);
+}
+
+let editingBehaviorId = null;
+
+function openAddBehavior() {
+  editingBehaviorId = null;
+  document.querySelector('#modal-add-behavior .modal-title').textContent = '🍃 Add Behavior';
+  document.getElementById('new-beh-name').value = '';
+  document.getElementById('new-beh-pts').value = '1';
+  document.getElementById('new-beh-emoji').value = '⭐';
+  document.getElementById('modal-add-behavior').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-beh-name').focus(), 50);
+}
+
+function openEditBehavior(id) {
+  const b = behaviors.find(x=>x.id===id);
+  if (!b) return;
+  editingBehaviorId = id;
+  document.querySelector('#modal-add-behavior .modal-title').textContent = '✏️ Edit Behavior';
+  document.getElementById('new-beh-name').value = b.name;
+  document.getElementById('new-beh-pts').value = b.pts;
+  document.getElementById('new-beh-emoji').value = b.emoji;
+  document.getElementById('modal-add-behavior').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-beh-name').focus(), 50);
+}
+
+function addBehavior() {
+  const name = document.getElementById('new-beh-name').value.trim();
+  if (!name) return;
+  const pts = parseInt(document.getElementById('new-beh-pts').value)||1;
+  const emoji = document.getElementById('new-beh-emoji').value||'⭐';
+  if (editingBehaviorId) {
+    const b = behaviors.find(x=>x.id===editingBehaviorId);
+    if (b) { b.name=name; b.pts=pts; b.emoji=emoji; }
+    showToast('Behavior updated!');
+  } else {
+    behaviors.push({id:nextId++, name, pts, emoji});
+    showToast('Behavior added!');
+  }
+  closeModal('modal-add-behavior');
+  renderBehaviors(); saveData();
+}
+
+function removeBehavior(id) {
+  behaviors = behaviors.filter(x=>x.id!==id);
+  renderBehaviors(); saveData();
+}
+
+function renderStore() {
+  const sel = document.getElementById('spend-student');
+  sel.innerHTML = students.map(s=>`<option value="${s.id}">${s.emoji} ${escHtml(s.name)} — ${s.points} pts</option>`).join('');
+  const grid = document.getElementById('reward-grid');
+  if (!rewards.length) { grid.innerHTML='<div class="empty-state"><i class="ti ti-gift"></i>No rewards yet!</div>'; return; }
+  const sorted = [...rewards].sort((a,b)=>a.name.localeCompare(b.name));
+  grid.innerHTML = sorted.map(r=>`
+    <div class="reward-card" ondblclick="openEditReward(${r.id})" title="Double-click to edit" style="cursor:pointer">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="reward-emoji">${r.emoji}</div>
+        <button class="btn btn-sm" onclick="event.stopPropagation();openEditReward(${r.id})" title="Edit" style="padding:3px 7px"><i class="ti ti-edit"></i></button>
+      </div>
+      <div class="reward-name">${escHtml(r.name)}</div>
+      <div class="reward-cost"><span class="reward-cost-num">${r.cost}</span> points</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-spend btn-sm" style="flex:1" onclick="event.stopPropagation();spendReward(${r.id})"><i class="ti ti-shopping-cart"></i> Redeem</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation();removeReward(${r.id})" title="Remove"><i class="ti ti-x"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function spendReward(rid) {
+  const r = rewards.find(x=>x.id===rid);
+  const sid = parseInt(document.getElementById('spend-student').value);
+  const s = students.find(x=>x.id===sid);
+  if (!s||!r) return;
+  if (s.points < r.cost) { showToast(`${s.name} needs ${r.cost-s.points} more points!`); return; }
+  s.points -= r.cost;
+  addHistory(s.name, -r.cost, `Redeemed: ${r.name}`);
+  renderStore(); renderStudents(); saveData();
+  showToast(`🎉 ${s.name} redeemed ${r.emoji} ${r.name}!`);
+}
+
+let editingRewardId = null;
+
+function openAddReward() {
+  editingRewardId = null;
+  document.querySelector('#modal-add-reward .modal-title').textContent = '🌰 Add Reward';
+  document.getElementById('new-rew-name').value = '';
+  document.getElementById('new-rew-cost').value = '10';
+  document.getElementById('new-rew-emoji').value = '🎟️';
+  document.getElementById('modal-add-reward').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-rew-name').focus(), 50);
+}
+
+function openEditReward(id) {
+  const r = rewards.find(x=>x.id===id);
+  if (!r) return;
+  editingRewardId = id;
+  document.querySelector('#modal-add-reward .modal-title').textContent = '✏️ Edit Reward';
+  document.getElementById('new-rew-name').value = r.name;
+  document.getElementById('new-rew-cost').value = r.cost;
+  document.getElementById('new-rew-emoji').value = r.emoji;
+  document.getElementById('modal-add-reward').style.display = 'flex';
+  setTimeout(()=>document.getElementById('new-rew-name').focus(), 50);
+}
+
+function addReward() {
+  const name = document.getElementById('new-rew-name').value.trim();
+  if (!name) return;
+  const cost = parseInt(document.getElementById('new-rew-cost').value)||10;
+  const emoji = document.getElementById('new-rew-emoji').value||'🎁';
+  if (editingRewardId) {
+    const r = rewards.find(x=>x.id===editingRewardId);
+    if (r) { r.name=name; r.cost=cost; r.emoji=emoji; }
+    showToast('Reward updated!');
+  } else {
+    rewards.push({id:nextId++, name, cost, emoji});
+    showToast('Reward added!');
+  }
+  closeModal('modal-add-reward');
+  renderStore(); saveData();
+}
+
+function removeReward(id) {
+  rewards = rewards.filter(x=>x.id!==id);
+  renderStore(); saveData();
+}
+
+function addHistory(studentName, delta, reason) {
+  const now = new Date();
+  history.unshift({studentName, delta, reason, time: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), date: now.toLocaleDateString()});
+  if (history.length > 200) history.pop();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!history.length) { list.innerHTML='<div class="empty-state"><i class="ti ti-history"></i>No history yet.</div>'; return; }
+  list.innerHTML = history.map(h=>`
+    <div class="history-item">
+      <span style="font-weight:500">${escHtml(h.studentName)}</span>
+      <span style="color:var(--color-text-secondary);flex:1;padding-left:8px;font-size:12px">${escHtml(h.reason)}</span>
+      <span class="history-delta ${h.delta>0?'pos':'neg'}">${h.delta>0?'+':''}${h.delta}</span>
+      <span class="history-time">${h.time}</span>
+    </div>`).join('');
+}
+
+function clearHistory() {
+  if (!confirm('Clear all history?')) return;
+  history = [];
+  renderHistory(); saveData();
+  showToast('History cleared.');
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay').forEach(m=>m.style.display='none');
+});
+
+// Expose all functions to window so inline onclick handlers work with type="module"
+Object.assign(window, {
+  showPanel, renderQuickBtns, renderSettings, renderStudents, renderBehaviors,
+  renderStore, renderGroups, renderHistory,
+  openAddStudent, addStudent, pickEmoji, toggleSelect, toggleSelectAll, removeSelected,
+  openStudentDetail, pickDetailEmoji, saveStudentName, adjustPoints, applyCustom, removeStudent,
+  quickAward,
+  openAddBehavior, openEditBehavior, addBehavior, removeBehavior,
+  openApplyBehavior, applyBehaviorConfirm, behSelectAll, updateBehSummary,
+  openAddReward, openEditReward, addReward, removeReward, spendReward,
+  openAddGroup, openEditGroup, saveGroup, deleteGroup, awardGroup, awardGroupCustom,
+  groupMemberSelectAll,
+  addQuickBtn, removeQuickBtnRow, saveQuickBtns, resetQuickBtns, renderBtnPreview,
+  clearHistory, closeModal,
+  exportData, importData,
+  doLogin, doSignOut,
+});
+
+renderStudents();
+renderQuickBtns();
+</script>
+</body>
+</html>
