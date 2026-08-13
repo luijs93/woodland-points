@@ -173,9 +173,9 @@
   .empty-state i { font-size: 44px; display: block; margin-bottom: 0.5rem; color: var(--ink-light); opacity: 0.4; }
 
   /* Behaviors */
-  .behaviors-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
-  .behavior-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-md); padding: 10px 14px; transition: all 0.12s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .behavior-row:hover { box-shadow: 0 3px 10px rgba(122,158,126,0.12); transform: translateY(-1px); }
+  .behaviors-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .behavior-row { display: flex; flex-direction: column; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; transition: all 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
+  .behavior-row:hover { transform: translateY(-2px); box-shadow: 0 5px 16px rgba(122,158,126,0.14); }
   .behavior-emoji { font-size: 22px; width: 32px; text-align: center; }
   .behavior-info { flex: 1; }
   .behavior-name { font-size: 14px; font-weight: 700; color: var(--ink); }
@@ -885,7 +885,7 @@ function awardGroup(groupId, pts) {
   const members = students.filter(s=>g.memberIds.includes(s.id));
   if (!members.length) { showToast('No members in this group!'); return; }
   members.forEach(s => {
-    s.points = Math.max(0, s.points+pts);
+    s.points = s.points+pts;
     addHistory(s.name, pts, `Group: ${g.name}`);
   });
   renderGroups(); renderStudents(); saveData();
@@ -901,7 +901,7 @@ function awardGroupCustom(groupId) {
   const members = students.filter(s=>g.memberIds.includes(s.id));
   if (!members.length) { showToast('No members in this group!'); return; }
   members.forEach(s => {
-    s.points = Math.max(0, s.points+pts);
+    s.points = s.points+pts;
     addHistory(s.name, pts, reason);
   });
   document.getElementById(`grp-custom-${groupId}`).value = '';
@@ -1051,7 +1051,7 @@ function renderStudents() {
     <div class="student-card${selected.has(s.id)?' selected':''}" id="scard-${s.id}" onclick="toggleSelect(${s.id},event)" ondblclick="openStudentDetail(${s.id})">
       <div class="avatar" style="background:${avatarBg(s.emoji)}">${s.emoji}</div>
       <div class="student-name">${escHtml(s.name)}</div>
-      <div class="student-points">${s.points}</div>
+      <div class="student-points" style="color:${s.points<0?'var(--lose)':'var(--sage)'}">${s.points}</div>
       <div class="points-label">points</div>
       <span class="point-flash" id="flash-${s.id}"></span>
     </div>
@@ -1104,7 +1104,7 @@ function updateSelectionUI() {
 function quickAward(pts, reason) {
   selected.forEach(id => {
     const s = students.find(x=>x.id===id);
-    if (s) { s.points = Math.max(0, s.points+pts); flashCard(id,pts); addHistory(s.name,pts,reason); }
+    if (s) { s.points = s.points+pts; flashCard(id,pts); addHistory(s.name,pts,reason); }
   });
   renderStudents(); saveData();
   showToast(`${pts>0?'+':''}${pts} points to ${selected.size} student${selected.size>1?'s':''}!`);
@@ -1140,7 +1140,7 @@ function addStudent() {
   const name = document.getElementById('new-student-name').value.trim();
   if (!name) { document.getElementById('new-student-name').focus(); return; }
   const pts = parseInt(document.getElementById('new-student-pts').value)||0;
-  students.push({id:nextId++, name, points:Math.max(0,pts), emoji:window._pickedEmoji||'🦊'});
+  students.push({id:nextId++, name, points:pts, emoji:window._pickedEmoji||'🦊'});
   closeModal('modal-add-student');
   renderStudents(); saveData();
   showToast('Student added!');
@@ -1201,7 +1201,7 @@ function saveStudentName() {
 function adjustPoints(pts, reason) {
   const s = students.find(x=>x.id===activeStudentId);
   if (!s) return;
-  s.points = Math.max(0, s.points+pts);
+  s.points = s.points+pts;
   addHistory(s.name, pts, reason);
   const dp = document.getElementById('detail-pts');
   if (dp) dp.innerHTML = `${s.points} <span style="font-size:14px;font-weight:400;color:var(--ink-light)">points</span>`;
@@ -1232,15 +1232,15 @@ function renderBehaviors() {
   const neg = behaviors.filter(b=>b.pts<0).sort((a,b)=>a.name.localeCompare(b.name));
   const html = (list) => list.map(b=>`
     <div class="behavior-row" ondblclick="openEditBehavior(${b.id})" title="Double-click to edit">
-      <span class="behavior-emoji">${b.emoji}</span>
-      <div class="behavior-info">
-        <div class="behavior-name">${escHtml(b.name)}</div>
-        <div class="behavior-pts">${b.pts>0?'+':''}${b.pts} points</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <span class="behavior-emoji" style="font-size:30px">${b.emoji}</span>
+        <button class="btn btn-sm" onclick="event.stopPropagation();openEditBehavior(${b.id})" title="Edit" style="padding:3px 7px"><i class="ti ti-edit"></i></button>
       </div>
-      <div style="display:flex;gap:6px;margin-left:auto">
-        <button class="btn ${b.pts>0?'btn-earn':'btn-lose'} btn-sm" onclick="openApplyBehavior(${b.id})">Apply</button>
-        <button class="btn btn-sm" onclick="openEditBehavior(${b.id})" title="Edit"><i class="ti ti-edit"></i></button>
-        <button class="btn btn-sm" onclick="removeBehavior(${b.id})" title="Remove"><i class="ti ti-x"></i></button>
+      <div class="behavior-name" style="margin-bottom:4px">${escHtml(b.name)}</div>
+      <div class="behavior-pts" style="margin-bottom:10px">${b.pts>0?'+':''}${b.pts} points</div>
+      <div style="display:flex;gap:6px;margin-top:auto">
+        <button class="btn ${b.pts>0?'btn-earn':'btn-lose'} btn-sm" style="flex:1" onclick="event.stopPropagation();openApplyBehavior(${b.id})"><i class="ti ti-bolt"></i> Apply</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation();removeBehavior(${b.id})" title="Remove"><i class="ti ti-x"></i></button>
       </div>
     </div>`).join('');
   document.getElementById('pos-behaviors').innerHTML = pos.length ? html(pos) : '<div style="color:var(--ink-light);font-size:13px;padding:8px 0">None yet.</div>';
@@ -1285,7 +1285,7 @@ function applyBehaviorConfirm() {
   if (!b || !checked.length) { showToast('Select at least one student.'); return; }
   checked.forEach(chk => {
     const s = students.find(x=>x.id===parseInt(chk.value));
-    if (s) { s.points = Math.max(0, s.points+b.pts); addHistory(s.name, b.pts, b.name); }
+    if (s) { s.points = s.points+b.pts; addHistory(s.name, b.pts, b.name); }
   });
   closeModal('modal-apply-behavior');
   renderStudents(); renderBehaviors(); saveData();
